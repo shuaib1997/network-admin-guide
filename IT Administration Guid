@@ -1,0 +1,81 @@
+# 🖧 KunFayakun IT Administration Guide 🖧
+
+This guide will walk you through setting up a domain, adding computers and users, and applying Group Policy in Active Directory Users and Computers.
+
+## 1. 🏁 Create a Domain in Active Directory
+
+### Step-by-Step:
+1. **Install Active Directory Domain Services (AD DS)**:
+   - Open **Server Manager** ➡️ Click on **Manage** ➡️ Select **Add Roles and Features**.
+   - In the wizard, select **Role-based or feature-based installation** ➡️ Select the server ➡️ Choose **Active Directory Domain Services** and click **Next**.
+   - Confirm installation and wait for the process to complete.
+
+2. **Promote the Server to a Domain Controller**:
+   - After installation, click the **Notification Flag** in Server Manager ➡️ Select **Promote this server to a domain controller**.
+   - In the **Deployment Configuration** tab, select **Add a new forest** ➡️ Enter the **Root domain name** (e.g., `kunfayakun.local`).
+   - Follow the wizard to complete the promotion and reboot the server.
+
+3. **Verify Domain Creation**:
+   - After the reboot, log in to the server as a **Domain Administrator**.
+   - Open **Active Directory Users and Computers** and confirm that your domain (e.g., `kunfayakun.local`) is listed.
+
+## 2. 🖥️ Add Computers to the Domain
+
+### Step-by-Step:
+1. **On the Client Computer**:
+   - Right-click on **This PC** ➡️ Select **Properties** ➡️ Click **Change settings** next to **Computer name**.
+   - In the **System Properties** window, click **Change** ➡️ Select **Domain** and enter the domain name (e.g., `kunfayakun.local`).
+   - Enter the **Domain Administrator** credentials and restart the computer.
+
+2. **Verify Computer Addition**:
+   - Go back to the **Domain Controller**.
+   - Open **Active Directory Users and Computers** ➡️ Expand the domain ➡️ Go to the **Computers** container and check if the client computer is listed.
+
+## 3. 👥 Add Users and Groups
+
+### Step-by-Step:
+1. **Create a New User**:
+   - Open **Active Directory Users and Computers**.
+   - Right-click on the **Users** container ➡️ Select **New** ➡️ Click **User**.
+   - Fill in the details (e.g., First Name, Last Name, Username) ➡️ Set the password ➡️ Click **Finish**.
+
+2. **Create a New Group**:
+   - Right-click on the **Users** container ➡️ Select **New** ➡️ Click **Group**.
+   - Enter the **Group name** (e.g., `KunFayakun-Admins`) ➡️ Choose a **Group scope** and **Group type** ➡️ Click **OK**.
+
+3. **Add Users to a Group**:
+   - Right-click on the group you created ➡️ Select **Properties** ➡️ Go to the **Members** tab ➡️ Click **Add** ➡️ Enter the usernames you want to add to the group ➡️ Click **OK**.
+
+## 4. 🔧 Configure Group Policy
+
+### Step-by-Step:
+1. **Open Group Policy Management**:
+   - Go to **Server Manager** ➡️ Click **Tools** ➡️ Select **Group Policy Management**.
+
+2. **Create a New Group Policy Object (GPO)**:
+   - Expand your domain (e.g., `kunfayakun.local`) ➡️ Right-click on **Group Policy Objects** ➡️ Select **New**.
+   - Name the GPO (e.g., `KunFayakun-Employee-Policy`) ➡️ Click **OK**.
+
+3. **Link the GPO to an Organizational Unit (OU)**:
+   - Drag the newly created GPO to the desired OU (e.g., `Employees` OU).
+   - Right-click on the OU ➡️ Select **Link an Existing GPO** ➡️ Choose the GPO you created.
+
+4. **Edit the GPO**:
+   - Right-click on the GPO ➡️ Select **Edit**.
+   - Configure settings under **User Configuration** and **Computer Configuration** as needed (e.g., password policies, desktop settings).
+
+## 5. 🛠️ Different Ways to Perform These Tasks
+
+1. **Using PowerShell**:
+   - Install AD DS: `Install-WindowsFeature -Name AD-Domain-Services`
+   - Create a user: `New-ADUser -Name "John Doe" -GivenName "John" -Surname "Doe" -SamAccountName "jdoe" -UserPrincipalName "jdoe@kunfayakun.local" -Path "CN=Users,DC=kunfayakun,DC=local" -AccountPassword (ConvertTo-SecureString "P@ssw0rd" -AsPlainText -Force) -Enabled $true`
+
+2. **Using Command Line**:
+   - Add a computer to the domain: `netdom join %computername% /domain:kunfayakun.local /userd:DomainAdmin /passwordd:*`
+
+3. **Using Remote Server Administration Tools (RSAT)**:
+   - Install RSAT on a Windows 10/11 machine to manage the domain from a remote computer.
+
+---
+
+This guide provides a step-by-step approach to managing your organization's IT infrastructure using Active Directory. Feel free to modify and expand it as needed!
